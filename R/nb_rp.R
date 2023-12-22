@@ -95,12 +95,22 @@
 #'
 #' @examples
 #' NULL
-nb.rp <- function(formula, rpar_formula, data, ndraws = 1500, scrambled = FALSE, correlated = FALSE, method = 'BHHH', max_iters = 200) {
+nb.rp <- function(
+    formula,
+    rpar_formula,
+    data,
+    ndraws = 1500,
+    scrambled = FALSE,
+    correlated = FALSE,
+    method = 'BHHH',
+    max_iters = 200) {
 
+  ## Define formula for random parameters
   rpars <- rpar_formula[[2]]
   n_rpar <- length(rpars)
   if (n_rpar == 1) {
-    rpar_formula <- formula(paste0("param ~ ", rpars, " + (", rpars, "|subject)"))
+    rpar_formula <-
+      formula(paste0("param ~ ", rpars, " + (", rpars, "|subject)"))
   }
 
   mod1_frame <- stats::model.frame(formula, data)
@@ -112,11 +122,12 @@ nb.rp <- function(formula, rpar_formula, data, ndraws = 1500, scrambled = FALSE,
   nb_vars <- c(all.vars(formula)[-1], all.vars(rpar_formula))
   nb_formula <- reformulate(nb_vars, response = y_name, intercept = TRUE)
 
-
-  # check to ensure both random and fixed parameters do not both have an intercept
+  # Check to ensure both random and fixed parameters do not both have an
+  # intercept
   has_intercept <- function(X_Fixed){
     return(stringr::str_detect(colnames(X_Fixed), regex("intercept", ignore_case = TRUE)))
   }
+
   if ((sum(has_intercept(X_Fixed)) + sum(has_intercept(X_rand))) > 1) {
     message('You can only include an intercept as a fixed parameter OR a random parameter. \n Assuming intercept is a random parameter. \n Use "- 1" in the formula that does not have the intercept to specify a formula without an intercept.')
 
@@ -134,12 +145,12 @@ nb.rp <- function(formula, rpar_formula, data, ndraws = 1500, scrambled = FALSE,
   x_fixed_names <- colnames(X_Fixed)
   x_rand_names <- rpar <- colnames(X_rand)
 
-  if (length(rpar)<2){
+  if (length(rpar) < 2){
     correlated = FALSE
   }
 
   nb_prob <- function(y, mu, alpha) {
-    r <- 1/alpha
+    r <- 1 / alpha
     prob = dnbinom(y, size = r, mu = mu)
     return(prob)
   }
@@ -314,9 +325,3 @@ nb.rp <- function(formula, rpar_formula, data, ndraws = 1500, scrambled = FALSE,
 
   return(fit)
 }
-
-
-
-
-
-
