@@ -1,23 +1,20 @@
-
-
-
-
 #' Negative Binomial Regression with Random Parameters
 #'
 #' @param formula Formula object specifying the model to be fitted.
 #' @param rpar_formula Formula object specifying the random intercepts and slopes.
-#' @param data
-#' @param ndraws
-#' @param scrambled
-#' @param correlated
-#' @param method
-#' @param max.iters
+#' @param data Data frame containing the variables used in the model
+#' @param ndraws Number of Halton draws to use for the simulated maximum likelihood estimation (default is 1500).
+#' @param scrambled Logical indicating whether or not to scramble the halton sequence (default is FALSE).
+#' @param correlated Logical indicating whether or not the random intercepts and slopes are correlated (default is FALSE).
+#' @param method Optimization method to use for the maximum likelihood estimation (default is BHHH).
+#' @param max_iters Maximum number of iterations for the optimization method (default is 200).
 #'
 #' @return
 #' @export
 #'
 #' @examples
-nb.rp <- function(formula, rpar_formula, data, ndraws = 1500, scrambled = FALSE, correlated = FALSE, method = 'BHHH', max.iters = 200) {
+#' NULL
+nb.rp <- function(formula, rpar_formula, data, ndraws = 1500, scrambled = FALSE, correlated = FALSE, method = 'BHHH', max_iters = 200) {
   if (length(rpar_formula[[2]]) == 1) {
     rpar_formula <- formula(paste0("param ~ ", rpar_formula[[2]], " + (", rpar_formula[[2]], "|subject)"))
   }
@@ -178,7 +175,7 @@ nb.rp <- function(formula, rpar_formula, data, ndraws = 1500, scrambled = FALSE,
                         correlated = correlated,
                         est_method = method,
                         method = method,
-                        control = list(iterlim = max.iters, printLevel = 2))
+                        control = list(iterlim = max_iters, printLevel = 2))
 
   print(summary(fit))
   x_rand_names <- paste(x_rand_names, ':Mean')
@@ -253,16 +250,9 @@ nb.rp <- function(formula, rpar_formula, data, ndraws = 1500, scrambled = FALSE,
 
 # The function nb.rp estimates a negative binomial model with random intercepts and slopes using maximum simulated likelihood. The function uses the MASS, nlme, randtoolbox, maxLik, dplyr, stringr, groupdata2, tibble, and cureplots packages.
 #
-# The input arguments of the function are:
-#
-# formula: a formula object specifying the model to be fitted.
-# rpar_formula: a formula object specifying the random intercepts and slopes.
-# data: a data frame containing the variables used in the model.
-# ndraws: the number of halton draws to use for the simulated maximum likelihood estimation (default is 1500).
-# scrambled: a logical indicating whether or not to scramble the halton sequence (default is FALSE).
-# correlated: a logical indicating whether or not the random intercepts and slopes are correlated (default is FALSE).
-# method: the optimization method to use for the maximum likelihood estimation (default is BHHH).
-# max.iters: the maximum number of iterations for the optimization method (default is 200).
+
+
+
 # The function first constructs the fixed and random design matrices and checks if both have an intercept. If both have an intercept, it assumes the intercept is a random parameter and removes it from the fixed formula and adds it to the random formula.
 #
 # The function then fits a negative binomial model using MASS::glm.nb(), obtains the model coefficients, and constructs the function for the negative binomial probability density function.
