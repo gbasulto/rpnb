@@ -13,3 +13,4 @@ Authors@R: c(
     person("Jonathan", "Wood", , "jwood2@iastate.edu", role = "aut"),
     person("Guillermo", "Basulto-Elias", , "basulto@iastate.edu", role = c("aut", "cre"))
   )
+RoxygenNote: 7.2.3
