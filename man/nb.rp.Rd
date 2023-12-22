@@ -18,19 +18,29 @@ nb.rp(
 \arguments{
 \item{formula}{Formula object specifying the model to be fitted.}
 
-\item{rpar_formula}{Formula object specifying the random intercepts and slopes.}
+\item{rpar_formula}{Formula object specifying the random intercepts and
+slopes.}
 
 \item{data}{Data frame containing the variables used in the model}
 
-\item{ndraws}{Number of Halton draws to use for the simulated maximum likelihood estimation (default is 1500).}
+\item{ndraws}{Number of Halton draws to use for the simulated maximum
+likelihood estimation (default is 1500).}
 
-\item{scrambled}{Logical indicating whether or not to scramble the halton sequence (default is FALSE).}
+\item{scrambled}{Logical indicating whether or not to scramble the halton
+sequence (default is FALSE).}
 
-\item{correlated}{Logical indicating whether or not the random intercepts and slopes are correlated (default is FALSE).}
+\item{correlated}{Logical indicating whether or not the random intercepts and
+slopes are correlated (default is FALSE).}
 
-\item{method}{Optimization method to use for the maximum likelihood estimation (default is BHHH).}
+\item{method}{Optimization method to use for the maximum likelihood
+estimation (default is BHHH).}
 
-\item{max_iters}{Maximum number of iterations for the optimization method (default is 200).}
+\item{max_iters}{Maximum number of iterations for the optimization method
+(default is 200).}
+}
+\value{
+Sum of the negative log-likelihood and the penalty term for
+  regularization.
 }
 \description{
 The function nb.rp estimates a negative binomial model with random intercepts
@@ -46,6 +56,7 @@ indicating whether to scramble the halton sequence used for generating random
 parameters, the method used for optimization and the maximum number of
 iterations for optimization. The function requires the 'MASS', 'nlme',
 'randtoolbox', 'maxLik', 'dplyr' and 'stringr' packages.
+
 The function first extracts the model matrix for the fixed parameters, the
 model matrix for the random parameters, and the response variable. It checks
 if the model includes both fixed and random intercepts and if so, assumes the
@@ -57,9 +68,11 @@ vector for optimization, which includes the coefficients for the fixed
 parameters, the means of the random parameters, and the standard deviations
 of the random parameters (if they are uncorrelated) or the Cholesky
 decomposition matrix of the correlation matrix (if they are correlated).
+
 The function then defines two helper functions: one that calculates the
 probability of observing the response variable given the mean and dispersion
 parameter, and one that generates halton draws for the random parameters.
+
 The main function for optimization takes as input a vector of parameters, the
 response variable, the model matrix for the fixed parameters, the model
 matrix for the random parameters, the number of draws, a logical value
@@ -73,6 +86,7 @@ and standard deviations or Cholesky decomposition matrix. It calculates the
 negative log-likelihood for the negative binomial model using the nb_prob
 function and returns the sum of the negative log-likelihood and the penalty
 term for regularization.
+
 Finally, the main function optimizes the negative log-likelihood using the
 specified optimization method and returns the optimized parameter estimates.
 }

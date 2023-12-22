@@ -12,7 +12,7 @@
 #' parameters, the method used for optimization and the maximum number of
 #' iterations for optimization. The function requires the 'MASS', 'nlme',
 #' 'randtoolbox', 'maxLik', 'dplyr' and 'stringr' packages.
-#
+#'
 #' The function first extracts the model matrix for the fixed parameters, the
 #' model matrix for the random parameters, and the response variable. It checks
 #' if the model includes both fixed and random intercepts and if so, assumes the
@@ -24,11 +24,11 @@
 #' parameters, the means of the random parameters, and the standard deviations
 #' of the random parameters (if they are uncorrelated) or the Cholesky
 #' decomposition matrix of the correlation matrix (if they are correlated).
-#
+#'
 #' The function then defines two helper functions: one that calculates the
 #' probability of observing the response variable given the mean and dispersion
 #' parameter, and one that generates halton draws for the random parameters.
-#
+#'
 #' The main function for optimization takes as input a vector of parameters, the
 #' response variable, the model matrix for the fixed parameters, the model
 #' matrix for the random parameters, the number of draws, a logical value
@@ -42,25 +42,34 @@
 #' negative log-likelihood for the negative binomial model using the nb_prob
 #' function and returns the sum of the negative log-likelihood and the penalty
 #' term for regularization.
-#
+#'
 #' Finally, the main function optimizes the negative log-likelihood using the
 #' specified optimization method and returns the optimized parameter estimates.
 #'
 #' @param formula Formula object specifying the model to be fitted.
-#' @param rpar_formula Formula object specifying the random intercepts and slopes.
+#' @param rpar_formula Formula object specifying the random intercepts and
+#'   slopes.
 #' @param data Data frame containing the variables used in the model
-#' @param ndraws Number of Halton draws to use for the simulated maximum likelihood estimation (default is 1500).
-#' @param scrambled Logical indicating whether or not to scramble the halton sequence (default is FALSE).
-#' @param correlated Logical indicating whether or not the random intercepts and slopes are correlated (default is FALSE).
-#' @param method Optimization method to use for the maximum likelihood estimation (default is BHHH).
-#' @param max_iters Maximum number of iterations for the optimization method (default is 200).
+#' @param ndraws Number of Halton draws to use for the simulated maximum
+#'   likelihood estimation (default is 1500).
+#' @param scrambled Logical indicating whether or not to scramble the halton
+#'   sequence (default is FALSE).
+#' @param correlated Logical indicating whether or not the random intercepts and
+#'   slopes are correlated (default is FALSE).
+#' @param method Optimization method to use for the maximum likelihood
+#'   estimation (default is BHHH).
+#' @param max_iters Maximum number of iterations for the optimization method
+#'   (default is 200).
 #'
-#' @return
+#' @return Sum of the negative log-likelihood and the penalty term for
+#'   regularization.
 #' @export
 #'
 #' @examples
 #' NULL
 nb.rp <- function(formula, rpar_formula, data, ndraws = 1500, scrambled = FALSE, correlated = FALSE, method = 'BHHH', max_iters = 200) {
+
+
   if (length(rpar_formula[[2]]) == 1) {
     rpar_formula <- formula(paste0("param ~ ", rpar_formula[[2]], " + (", rpar_formula[[2]], "|subject)"))
   }
