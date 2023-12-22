@@ -5,6 +5,34 @@
 #' nlme, randtoolbox, maxLik, dplyr, stringr, groupdata2, tibble, and cureplots
 #' packages.
 #'
+#' The function first constructs the fixed and random design matrices and checks
+#' if both have an intercept. If both have an intercept, it assumes the
+#' intercept is a random parameter and removes it from the fixed formula and
+#' adds it to the random formula.
+#'
+#' The function then fits a negative binomial model using MASS::glm.nb(),
+#' obtains the model coefficients, and constructs the function for the negative
+#' binomial probability density function.
+#'
+#' Next, the function defines a function for generating halton draws. The number
+#' of parameters to be estimated is determined, and if the random formula
+#' contains only one parameter, correlated is set to FALSE. The function then
+#' generates halton draws and uses them to create the initial parameter
+#' estimates for the simulated maximum likelihood estimation.
+#'
+#' The function then defines the function that will be passed to the
+#' maxLik::maxLik() function for the simulated maximum likelihood estimation.
+#' This function takes the parameters to be estimated, the fixed and random
+#' design matrices, and the halton draws as input, and returns the negative
+#' log-likelihood.
+#'
+#' The function then calls maxLik::maxLik() to perform the simulated maximum
+#' likelihood estimation, passing the defined function and initial parameter
+#' estimates. Finally, the function returns the estimated model parameters and
+#' the negative log-likelihood.
+#'
+#' ------------------------------------------------------------------
+#'
 #' The function takes as input the formula for the model, the formula for the
 #' random parameters, the dataset, the number of draws, a logical value
 #' indicating whether the random parameters are correlated, a logical value
@@ -69,9 +97,10 @@
 #' NULL
 nb.rp <- function(formula, rpar_formula, data, ndraws = 1500, scrambled = FALSE, correlated = FALSE, method = 'BHHH', max_iters = 200) {
 
-
-  if (length(rpar_formula[[2]]) == 1) {
-    rpar_formula <- formula(paste0("param ~ ", rpar_formula[[2]], " + (", rpar_formula[[2]], "|subject)"))
+  rpars <- rpar_formula[[2]]
+  n_rpar <- length(rpars)
+  if (n_rpar == 1) {
+    rpar_formula <- formula(paste0("param ~ ", rpars, " + (", rpars, "|subject)"))
   }
 
   mod1_frame <- stats::model.frame(formula, data)
@@ -291,12 +320,3 @@ nb.rp <- function(formula, rpar_formula, data, ndraws = 1500, scrambled = FALSE,
 
 
 
-# The function first constructs the fixed and random design matrices and checks if both have an intercept. If both have an intercept, it assumes the intercept is a random parameter and removes it from the fixed formula and adds it to the random formula.
-#
-# The function then fits a negative binomial model using MASS::glm.nb(), obtains the model coefficients, and constructs the function for the negative binomial probability density function.
-#
-# Next, the function defines a function for generating halton draws. The number of parameters to be estimated is determined, and if the random formula contains only one parameter, correlated is set to FALSE. The function then generates halton draws and uses them to create the initial parameter estimates for the simulated maximum likelihood estimation.
-#
-# The function then defines the function that will be passed to the maxLik::maxLik() function for the simulated maximum likelihood estimation. This function takes the parameters to be estimated, the fixed and random design matrices, and the halton draws as input, and returns the negative log-likelihood.
-#
-# The function then calls maxLik::maxLik() to perform the simulated maximum likelihood estimation, passing the defined function and initial parameter estimates. Finally, the function returns the estimated model parameters and the negative log-likelihood.
