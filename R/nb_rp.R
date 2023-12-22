@@ -1,3 +1,22 @@
+
+
+
+
+#' Negative Binomial Regression with Random Parameters
+#'
+#' @param formula Formula object specifying the model to be fitted.
+#' @param rpar_formula Formula object specifying the random intercepts and slopes.
+#' @param data
+#' @param ndraws
+#' @param scrambled
+#' @param correlated
+#' @param method
+#' @param max.iters
+#'
+#' @return
+#' @export
+#'
+#' @examples
 nb.rp <- function(formula, rpar_formula, data, ndraws = 1500, scrambled = FALSE, correlated = FALSE, method = 'BHHH', max.iters = 200) {
   if (length(rpar_formula[[2]]) == 1) {
     rpar_formula <- formula(paste0("param ~ ", rpar_formula[[2]], " + (", rpar_formula[[2]], "|subject)"))
@@ -214,3 +233,42 @@ nb.rp <- function(formula, rpar_formula, data, ndraws = 1500, scrambled = FALSE,
 
   return(fit)
 }
+
+# The function takes as input the formula for the model, the formula for the
+# random parameters, the dataset, the number of draws, a logical value
+# indicating whether the random parameters are correlated, a logical value
+# indicating whether to scramble the halton sequence used for generating random
+# parameters, the method used for optimization and the maximum number of
+# iterations for optimization. The function requires the 'MASS', 'nlme',
+# 'randtoolbox', 'maxLik', 'dplyr' and 'stringr' packages.
+#
+# The function first extracts the model matrix for the fixed parameters, the model matrix for the random parameters, and the response variable. It checks if the model includes both fixed and random intercepts and if so, assumes the intercept is a random parameter. The function then creates a new formula for the negative binomial regression that includes both the fixed and random parameters. The model is fit using the glm.nb function in the MASS package, and the coefficients are extracted. The function then creates a starting vector for optimization, which includes the coefficients for the fixed parameters, the means of the random parameters, and the standard deviations of the random parameters (if they are uncorrelated) or the Cholesky decomposition matrix of the correlation matrix (if they are correlated).
+#
+# The function then defines two helper functions: one that calculates the probability of observing the response variable given the mean and dispersion parameter, and one that generates halton draws for the random parameters.
+#
+# The main function for optimization takes as input a vector of parameters, the response variable, the model matrix for the fixed parameters, the model matrix for the random parameters, the number of draws, a logical value indicating whether the random parameters are correlated, a logical value indicating whether to scramble the halton sequence used for generating random parameters, and the optimization method. The function extracts the coefficients for the fixed parameters, the means of the random parameters, and the dispersion parameter from the input vector of parameters. It then generates the random parameters using the halton_draws function and the means and standard deviations or Cholesky decomposition matrix. It calculates the negative log-likelihood for the negative binomial model using the nb_prob function and returns the sum of the negative log-likelihood and the penalty term for regularization.
+#
+# Finally, the main function optimizes the negative log-likelihood using the specified optimization method and returns the optimized parameter estimates.
+
+
+# The function nb.rp estimates a negative binomial model with random intercepts and slopes using maximum simulated likelihood. The function uses the MASS, nlme, randtoolbox, maxLik, dplyr, stringr, groupdata2, tibble, and cureplots packages.
+#
+# The input arguments of the function are:
+#
+# formula: a formula object specifying the model to be fitted.
+# rpar_formula: a formula object specifying the random intercepts and slopes.
+# data: a data frame containing the variables used in the model.
+# ndraws: the number of halton draws to use for the simulated maximum likelihood estimation (default is 1500).
+# scrambled: a logical indicating whether or not to scramble the halton sequence (default is FALSE).
+# correlated: a logical indicating whether or not the random intercepts and slopes are correlated (default is FALSE).
+# method: the optimization method to use for the maximum likelihood estimation (default is BHHH).
+# max.iters: the maximum number of iterations for the optimization method (default is 200).
+# The function first constructs the fixed and random design matrices and checks if both have an intercept. If both have an intercept, it assumes the intercept is a random parameter and removes it from the fixed formula and adds it to the random formula.
+#
+# The function then fits a negative binomial model using MASS::glm.nb(), obtains the model coefficients, and constructs the function for the negative binomial probability density function.
+#
+# Next, the function defines a function for generating halton draws. The number of parameters to be estimated is determined, and if the random formula contains only one parameter, correlated is set to FALSE. The function then generates halton draws and uses them to create the initial parameter estimates for the simulated maximum likelihood estimation.
+#
+# The function then defines the function that will be passed to the maxLik::maxLik() function for the simulated maximum likelihood estimation. This function takes the parameters to be estimated, the fixed and random design matrices, and the halton draws as input, and returns the negative log-likelihood.
+#
+# The function then calls maxLik::maxLik() to perform the simulated maximum likelihood estimation, passing the defined function and initial parameter estimates. Finally, the function returns the estimated model parameters and the negative log-likelihood.
