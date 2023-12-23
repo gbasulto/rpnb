@@ -15,20 +15,25 @@
 #
 # # Load data ---------------------------------------------------------------
 #
-# ## tmp path
-# data_path <-
-#   "C:/Users/basulto/Box/R Files for Packages/RPNB/WA_Urban_Freeways.RData"
-# crashes <- load(data_path)
+# # crashes <- read.csv("C:/Users/jwood2/Box/RPNB/WA/WA_FW_Full.csv")
+# # crashes$ID <- as.factor(crashes$ID)
+# # crashes <- crashes[crashes$length >= 0.1, ]
 #
-# crashes <- read.csv("C:/Users/jwood2/Box/RPNB/WA/WA_FW_Full.csv")
-# crashes$ID <- as.factor(crashes$ID)
-# crashes <- crashes[crashes$length >= 0.1, ]
+# crashes_tbl <-
+#   washington_roads |>
+#   mutate(ID = as.factor(ID)) |>
+#   filter(Length >= 0.1)
 #
 # #make this example reproducible
 # set.seed(1)
 #
 # # set 9 folds for k-fold cross validation, accounting for the ID of the location
-# crashes <- fold(crashes, id_col = 'ID', k = 9,  method = 'n_last', handle_existing_fold_cols = 'remove')
+# crashes <-
+#   fold(crashes_tbl,
+#        id_col = 'ID',
+#        k = 9,
+#        method = 'n_last',
+#        handle_existing_fold_cols = 'remove')
 #
 # nb.equat <- total_crash ~  Nlanes_5 + Nlanes_6 + Nlanes_7 +
 #   Nlanes_8 + Nlanes_9 + LW_great_13 + RollingTerrain + lnaadt_per_lane + lnlength  +  hc_dens
