@@ -1,5 +1,7 @@
 #
 #
+# # Load packages -----------------------------------------------------------
+#
 # library(MASS)
 # library(nlme)
 # library(randtoolbox)
@@ -9,6 +11,14 @@
 # library(groupdata2)
 # library(tibble)
 # library(cureplots)
+#
+#
+# # Load data ---------------------------------------------------------------
+#
+# ## tmp path
+# data_path <-
+#   "C:/Users/basulto/Box/R Files for Packages/RPNB/WA_Urban_Freeways.RData"
+# crashes <- load(data_path)
 #
 # crashes <- read.csv("C:/Users/jwood2/Box/RPNB/WA/WA_FW_Full.csv")
 # crashes$ID <- as.factor(crashes$ID)
