@@ -1,24 +1,24 @@
 #
 #
-# library("MASS")
-# library("nlme")
-# library("randtoolbox")
-# library("maxLik")
-# library("dplyr")
-# library("stringr")
-# library('groupdata2')
-# library('tibble')
+# library(MASS)
+# library(nlme)
+# library(randtoolbox)
+# library(maxLik)
+# library(dplyr)
+# library(stringr)
+# library(groupdata2)
+# library(tibble)
 # library(cureplots)
 #
 # crashes <- read.csv("C:/Users/jwood2/Box/RPNB/WA/WA_FW_Full.csv")
 # crashes$ID <- as.factor(crashes$ID)
-# crashes <- crashes[crashes$length>=0.1,]
+# crashes <- crashes[crashes$length >= 0.1, ]
 #
 # #make this example reproducible
 # set.seed(1)
 #
 # # set 9 folds for k-fold cross validation, accounting for the ID of the location
-# crashes <- fold(crashes, id_col = 'ID', k=9,  method = 'n_last', handle_existing_fold_cols = 'remove')
+# crashes <- fold(crashes, id_col = 'ID', k = 9,  method = 'n_last', handle_existing_fold_cols = 'remove')
 #
 # nb.equat <- total_crash ~  Nlanes_5 + Nlanes_6 + Nlanes_7 +
 #   Nlanes_8 + Nlanes_9 + LW_great_13 + RollingTerrain + lnaadt_per_lane + lnlength  +  hc_dens
